@@ -1,4 +1,8 @@
 import { useEffect, useRef, useState, useCallback } from "react";
+import photo1 from "./assets/photo1.jpg";
+import photo2 from "./assets/photo2.jpg";
+import photo3 from "./assets/photo3.jpg";
+import photo4 from "./assets/photo4.jpg";
 
 const COLORS = ["#f0c060", "#e8847a", "#5ec9c0", "#c084fc", "#ffffff", "#ffd700"];
 
@@ -92,51 +96,42 @@ function ConfettiCanvas({ triggerRef }) {
   );
 }
 
+// 4 image cards — remplace les cartes de phrases
 const cards = [
   {
-    emoji: "✨",
-    lang: "fr",
-    quote: "Chaque matin est une nouvelle chance de devenir la meilleure version de toi-même. Ne doute jamais de ta lumière — le monde en a besoin.",
-    author: "Avec tout mon cœur 💛",
+    image: photo1,
+    caption: "✨ Tu es capable de tout",
+    subcaption: "Crois en toi chaque matin",
     accent: "#f0c060",
-    bg: "linear-gradient(135deg, rgba(240,192,96,0.12), rgba(232,132,122,0.08))",
   },
   {
-    emoji: "🌟",
-    lang: "ar",
-    quote: "أنتَ قادرٌ على تجاوز كلّ العقبات، فلا تستسلم أبدًا. نورك يضيء الدروب المظلمة، والعالم يحتاج إليك بكلّ ما تحمله من جمال.",
-    author: "بكلّ محبّة 💜",
-    accent: "#c084fc",
-    bg: "linear-gradient(135deg, rgba(192,132,252,0.12), rgba(94,201,192,0.08))",
-    rtl: true,
-  },
-  {
-    emoji: "🔥",
-    lang: "fr",
-    quote: "Ta force intérieure est plus grande que tous tes doutes. Avance, même à petits pas — chaque pas compte et te rapproche de qui tu es vraiment.",
-    author: "Pour toi, toujours 🧡",
-    accent: "#e8847a",
-    bg: "linear-gradient(135deg, rgba(232,132,122,0.12), rgba(240,192,96,0.08))",
-  },
-  {
-    emoji: "🌙",
-    lang: "ar",
-    quote: "في أعمق اللّيالي، تولد أجمل النّجوم. أنت نجمة لامعة، لا تدع أحدًا يطفئ بريقك. ثِق بنفسك وامضِ قُدُمًا بثقة.",
-    author: "إلى الأبد معك 🌟",
+    image: photo2,
+    caption: "🌿 Avance, même à petits pas",
+    subcaption: "La nature avance toujours",
     accent: "#5ec9c0",
-    bg: "linear-gradient(135deg, rgba(94,201,192,0.12), rgba(192,132,252,0.08))",
-    rtl: true,
+  },
+  {
+    image: photo3,
+    caption: "🏔️ Vise les sommets",
+    subcaption: "Chaque étape compte",
+    accent: "#c084fc",
+  },
+  {
+    image: photo4,
+    caption: "🌅 Un nouveau départ chaque jour",
+    subcaption: "Le soleil se lève pour toi",
+    accent: "#e8847a",
   },
 ];
 
 const tickerItems = [
-  { emoji: "🌟", text: "Tu es unique" },
-  { emoji: "🔥", text: "Tu es fort(e)" },
-  { emoji: "💪", text: "Tu peux le faire" },
-  { emoji: "🌈", text: "Crois en toi" },
-  { emoji: "✨", text: "Avance toujours" },
-  { emoji: "💜", text: "أنت رائع" },
-  { emoji: "🌙", text: "لا تستسلم" },
+  { emoji: "❤️‍🩹🤍", text: "نموت فيك" },
+  { emoji: "🔥❤️", text: "نهواك" },
+  { emoji: "❤️❤️", text: "نتنفسك" },
+  { emoji: "❤️❤️", text: "نعشقك " },
+  { emoji: "✨❤️", text: "محلاك" },
+  { emoji: "⚡📌", text: " هانا مع بعضنا" },
+  
 ];
 const tickerDouble = [...tickerItems, ...tickerItems];
 
@@ -174,6 +169,8 @@ function Carousel() {
     return () => clearInterval(interval);
   }, [current, go]);
 
+  const card = cards[current];
+
   return (
     <div style={{ width: "100%", maxWidth: 420, margin: "0 auto 32px", position: "relative" }}>
       {/* Track */}
@@ -186,85 +183,102 @@ function Carousel() {
         onTouchStart={onPointerDown}
         onTouchMove={onPointerMove}
         onTouchEnd={onPointerUp}
-        style={{ overflow: "hidden", borderRadius: 24, cursor: dragging ? "grabbing" : "grab", userSelect: "none" }}
+        style={{
+          overflow: "hidden",
+          borderRadius: 24,
+          cursor: dragging ? "grabbing" : "grab",
+          userSelect: "none",
+          position: "relative",
+          height: 320,
+          boxShadow: `0 0 40px ${card.accent}44`,
+          transition: "box-shadow 0.5s ease",
+        }}
       >
+        {/* Sliding track */}
         <div
           style={{
             display: "flex",
+            height: "100%",
             transition: dragging ? "none" : "transform 0.45s cubic-bezier(0.25,1,0.5,1)",
             transform: `translateX(calc(${-current * 100}% + ${dragDelta}px))`,
             willChange: "transform",
           }}
         >
-          {cards.map((card, i) => (
+          {cards.map((c, i) => (
             <div
               key={i}
               style={{
                 minWidth: "100%",
-                background: card.bg,
-                border: `1px solid ${card.accent}33`,
-                borderRadius: 24,
-                padding: "36px 28px 32px",
-                backdropFilter: "blur(20px)",
+                height: "100%",
                 position: "relative",
-                overflow: "hidden",
-                direction: card.rtl ? "rtl" : "ltr",
-                textAlign: card.rtl ? "right" : "left",
+                flexShrink: 0,
               }}
             >
-              {/* Big quote mark */}
-              <div style={{
-                position: "absolute",
-                top: 18,
-                [card.rtl ? "right" : "left"]: 18,
-                fontFamily: "'Playfair Display', serif",
-                fontSize: 96,
-                lineHeight: 1,
-                color: card.accent,
-                opacity: 0.18,
-                pointerEvents: "none",
-                fontWeight: 700,
-              }}>
-                
-              </div>
+              {/* Image */}
+              <img
+                src={c.image}
+                alt={c.caption}
+                draggable={false}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  display: "block",
+                  borderRadius: 24,
+                  pointerEvents: "none",
+                }}
+              />
 
-              {/* Glow orb */}
+              {/* Gradient overlay */}
               <div style={{
                 position: "absolute",
-                width: 120, height: 120,
-                borderRadius: "50%",
-                background: card.accent,
-                opacity: 0.07,
-                filter: "blur(40px)",
-                top: -20,
-                [card.rtl ? "left" : "right"]: -20,
+                inset: 0,
+                borderRadius: 24,
+                background: `linear-gradient(to top, rgba(10,5,20,0.85) 0%, rgba(10,5,20,0.1) 60%, transparent 100%)`,
                 pointerEvents: "none",
               }} />
 
-              <div style={{ fontSize: 40, marginBottom: 16, display: "block" }}>{card.emoji}</div>
+              {/* Accent border */}
+              <div style={{
+                position: "absolute",
+                inset: 0,
+                borderRadius: 24,
+                border: `1.5px solid ${c.accent}55`,
+                pointerEvents: "none",
+              }} />
 
-              <p style={{
-                fontFamily: card.rtl ? "'Noto Sans Arabic', 'Cairo', sans-serif" : "'Playfair Display', serif",
-                fontStyle: card.rtl ? "normal" : "italic",
-                fontSize: card.rtl ? "1.05rem" : "1.08rem",
-                lineHeight: 1.75,
-                color: "rgba(253,246,236,0.92)",
-                marginBottom: 20,
-                position: "relative",
-                zIndex: 1,
+              {/* Caption */}
+              <div style={{
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                padding: "24px 24px 20px",
+                pointerEvents: "none",
               }}>
-                {card.quote}
-              </p>
-
-              <p style={{
-                fontSize: "0.75rem",
-                letterSpacing: "0.1em",
-                textTransform: card.rtl ? "none" : "uppercase",
-                color: card.accent,
-                fontWeight: 600,
-              }}>
-                — {card.author}
-              </p>
+                <p style={{
+                  fontFamily: "'Playfair Display', serif",
+                  fontStyle: "italic",
+                  fontSize: "1.15rem",
+                  fontWeight: 700,
+                  color: "#fdf6ec",
+                  lineHeight: 1.3,
+                  marginBottom: 6,
+                  textShadow: "0 2px 12px rgba(0,0,0,0.6)",
+                }}>
+                  {c.caption}
+                </p>
+                <p style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: "0.75rem",
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  color: c.accent,
+                  fontWeight: 600,
+                }}>
+                  {c.subcaption}
+                </p>
+              </div>
             </div>
           ))}
         </div>
@@ -272,7 +286,7 @@ function Carousel() {
 
       {/* Dots */}
       <div style={{ display: "flex", justifyContent: "center", gap: 8, marginTop: 18 }}>
-        {cards.map((card, i) => (
+        {cards.map((c, i) => (
           <button
             key={i}
             onClick={() => go(i)}
@@ -280,7 +294,7 @@ function Carousel() {
               width: current === i ? 24 : 8,
               height: 8,
               borderRadius: 999,
-              background: current === i ? card.accent : "rgba(255,255,255,0.2)",
+              background: current === i ? c.accent : "rgba(255,255,255,0.2)",
               border: "none",
               cursor: "pointer",
               padding: 0,
@@ -290,7 +304,7 @@ function Carousel() {
         ))}
       </div>
 
-      {/* Nav arrows (hidden on very small) */}
+      {/* Nav arrows */}
       <button
         onClick={() => go(current - 1)}
         style={{
@@ -398,10 +412,6 @@ export default function MessagePourToi() {
           0% { left: -100%; }
           40%, 100% { left: 130%; }
         }
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
 
         .emoji-burst {
           font-size: clamp(48px, 12vw, 64px);
@@ -498,7 +508,6 @@ export default function MessagePourToi() {
           pointer-events: none;
         }
 
-        /* Mobile specific */
         @media (max-width: 480px) {
           .carousel-nav-btn { display: none !important; }
         }
@@ -544,13 +553,13 @@ export default function MessagePourToi() {
 
         <div className="emoji-burst">✨</div>
 
-        <div className="pill">Message spécial pour toi · رسالة خاصة إليك</div>
+        <div className="pill">Message spécial pour toi  </div>
 
         <h1 className="headline">
-          Tu es capable de<br /><em>choses extraordinaires</em>
+          Ti amo نحبك  <br /><em> Katkout </em>
         </h1>
 
-        {/* Carousel */}
+        {/* Image Carousel */}
         <div style={{ width: "100%", maxWidth: 440, padding: "0 20px", animation: "slideUp 0.6s ease both 0.9s" }}>
           <Carousel />
         </div>
@@ -576,7 +585,7 @@ export default function MessagePourToi() {
 
         <button className="btn" onClick={handleBurst}>
           <div className="btn-shine" />
-          🎉 Envoyer de l'amour · أرسل الحب
+          Fait avec amour · صُنع بكلّ محبّة
         </button>
 
         <p style={{
@@ -586,7 +595,7 @@ export default function MessagePourToi() {
           color: "rgba(253,246,236,0.28)",
           animation: "slideUp 0.5s ease both 1.7s",
         }}>
-          Fait avec amour · صُنع بكلّ محبّة
+          
         </p>
 
       </div>
