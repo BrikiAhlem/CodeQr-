@@ -82,7 +82,7 @@ function ConfettiCanvas({ triggerRef }) {
       window.removeEventListener("resize", resize);
       clearTimeout(timer);
     };
-  }, []);
+  }, [triggerRef]);
 
   return (
     <canvas
